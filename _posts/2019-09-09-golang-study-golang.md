@@ -1,4 +1,4 @@
-# study golang
+
 package main
 
 import (
