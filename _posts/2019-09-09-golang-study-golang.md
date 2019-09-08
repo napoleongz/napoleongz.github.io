@@ -1,11 +1,13 @@
 # study golang
 package main
+
 import (
 	"fmt"
 	"strings"
 )
 
 func main() {
+
 	a := []string{
 		"a",
 		"b",
