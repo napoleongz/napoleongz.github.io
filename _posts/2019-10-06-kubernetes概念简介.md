@@ -23,14 +23,14 @@
   除了Master， Kubernetes集群中的其他机器被称为Node。 与Master一样， Node可以是一台物理主机， 也可以是一台虚拟机Node是Kubernetes集群中的工作负载节点， 每个Node都会被Master分配一些工作负载（Docker容器） ，当某个Node宕机时，其上的工作负载会被Master自动转移到其他节点上。
 在Node节点上运行了kubelet、kube-proxy、docker关键进程。Node可以在运行期间动态增加到Kubernetes集群中， 前提是在这个节点上已经正确安装、 配置和启动了上述关键进程， 在默认情况下kubelet会向Master注册自己， 这也是Kubernetes推荐的Node管理方式。一旦Node被纳入集群管理范围， kubelet进程就会定时向Master汇报自身的情报， 例如操作系统、 Docker版本、 机器的CPU和内存情况， 以及当前有哪些Pod在运行等， 这样Master就可以获知每个Node的资源使用情况， 实现高效均衡的资源调度策略。 而某个Node在超过指定时间不上报信息时， 会被Master判定为“失联”， Node的状态被标记为不可用（Not Ready） ， 随后Master会触发“工作负载大转移”的自动流程。
  
- ###  1）、kubelet
+ ### 1）、kubelet
   在Kubernetes集群中， 在每个Node上都会启动一个kubelet服务进程。 该进程用于处理Master下发到本节点的任务， 管理Pod及Pod中的容器。 每个kubelet进程都会在API Server上注册节点自身的信息， 定期向Master汇报节点资源的使用情况， 并通过cAdvisor监控容器和节点资源。
   总结之，kubelet主要有节点管理、Pod管理、容器健康检查、cAdvisor资源监控功能。
 
- ###  2）、kube-proxy
+ ### 2）、kube-proxy
   在Kubernetes集群的每个Node上都会运行一个kube-proxy服务进程， 我们可以把这个进程看作Service的透明代理兼负载均衡器， 其核心功能是将到某个Service的访问请求转发到后端的多个Pod实例上。 此外， Service的Cluster IP与NodePort等概念是kube-proxy服务通过iptables的NAT转换实现的， kube-proxy在运行过程中动态创建与Service相关的iptables规则， 这些规则实现了将访问服务（Cluster IP或NodePort） 的请求负载分发到后端Pod的功能。 由于iptables机制针对的是本地的kubeproxy端口， 所以在每个Node上都要运行kube-proxy组件， 这样一来， 在Kubernetes集群内部， 我们可以在任意Node上发起对Service的访问请求。 综上所述， 由于kube-proxy的作用， 在Service的调用过程中客户端无须关心后端有几个Pod， 中间过程的通信、 负载均衡及故障恢复都是透明的。
   
-## 4、Pod
+## 3、Pod
   Pod是一组紧密关联的容器集合，是 Kubernetes 项目中的最小编排单位,支持多个容器在一个Pod中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式完成服务，是Kubernetes调度的基本单位。Pod的设计理念是每个Pod都有一个唯一的IP。
 Pod 生命周期的变化，主要体现在 Pod API 对象的Status 部分，这是它除了 Metadata 和 Spec之外的第三个重要字段。其中，pod.status.phase，就是 Pod 的当前状态，它有如下几种可能的情况：
 1. Pending。这个状态意味着，Pod 的 YAML 文件已经提交给了 Kubernetes，API 对象已经被创建并保存在 Etcd 当中。但是，这个 Pod 里有些容器因为某种原因而不能被顺利创建。比如，调度不成功。
@@ -50,6 +50,6 @@ Pod 生命周期的变化，主要体现在 Pod API 对象的Status 部分，这
   Replication Controller（简称RC）是Kubernetes系统中的核心概念之一， 简单来说， 它其实定义了一个期望的场景， 即声明某种Pod的副本数量在任意时刻都符合某个预期值。
   RC主要有Pod期待的副本数量、用于筛选目标Pod的Label Selector、当Pod的副本数量小于预期数量时， 用于创建新Pod的Pod模板（template）三部分组成
   
-  
-  
+## 6、Deployment
+  Deployment可以看着为RC的一次升级。Deployment相对于RC的一个最大升级是我们可以随时知道当前Pod“部署”的进度。 实际上由于一个Pod的创建、 调度、 绑定节点及在目标Node上启动对应的容器这一完整过程需要一定的时间， 所以我们期待系统启动N个Pod副本的目标状态， 实际上是一个连续变化的“部署过程”导致的最终状态。
 
