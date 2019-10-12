@@ -30,7 +30,7 @@
  ### 2）、kube-proxy
   在Kubernetes集群的每个Node上都会运行一个kube-proxy服务进程， 我们可以把这个进程看作Service的透明代理兼负载均衡器， 其核心功能是将到某个Service的访问请求转发到后端的多个Pod实例上。 此外， Service的Cluster IP与NodePort等概念是kube-proxy服务通过iptables的NAT转换实现的， kube-proxy在运行过程中动态创建与Service相关的iptables规则， 这些规则实现了将访问服务（Cluster IP或NodePort） 的请求负载分发到后端Pod的功能。 由于iptables机制针对的是本地的kubeproxy端口， 所以在每个Node上都要运行kube-proxy组件， 这样一来， 在Kubernetes集群内部， 我们可以在任意Node上发起对Service的访问请求。 综上所述， 由于kube-proxy的作用， 在Service的调用过程中客户端无须关心后端有几个Pod， 中间过程的通信、 负载均衡及故障恢复都是透明的。
   
- ## 3、Pod
+## 4、Pod
  Pod是一组紧密关联的容器集合，是 Kubernetes 项目中的最小编排单位,支持多个容器在一个Pod中共享网络和文件系统，可以通过进程间通信和文件共享这种简单高效的方式完成服务，是Kubernetes调度的基本单位。Pod的设计理念是每个Pod都有一个唯一的IP。
  Pod 生命周期的变化，主要体现在 Pod API 对象的Status 部分，这是它除了 Metadata 和 Spec之外的第三个重要字段。其中，pod.status.phase，就是 Pod 的当前状态，它有如下几种可能的情况：
 1. Pending。这个状态意味着，Pod 的 YAML 文件已经提交给了 Kubernetes，API 对象已经被创建并保存在 Etcd 当中。但是，这个 Pod 里有些容器因为某种原因而不能被顺利创建。比如，调度不成功。
