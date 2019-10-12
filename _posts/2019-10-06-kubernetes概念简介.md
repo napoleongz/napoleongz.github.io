@@ -23,12 +23,12 @@
   除了Master， Kubernetes集群中的其他机器被称为Node。 与Master一样， Node可以是一台物理主机， 也可以是一台虚拟机Node是Kubernetes集群中的工作负载节点， 每个Node都会被Master分配一些工作负载（Docker容器） ，当某个Node宕机时，其上的工作负载会被Master自动转移到其他节点上。
 在Node节点上运行了kubelet、kube-proxy、docker关键进程。Node可以在运行期间动态增加到Kubernetes集群中， 前提是在这个节点上已经正确安装、 配置和启动了上述关键进程， 在默认情况下kubelet会向Master注册自己， 这也是Kubernetes推荐的Node管理方式。一旦Node被纳入集群管理范围， kubelet进程就会定时向Master汇报自身的情报， 例如操作系统、 Docker版本、 机器的CPU和内存情况， 以及当前有哪些Pod在运行等， 这样Master就可以获知每个Node的资源使用情况， 实现高效均衡的资源调度策略。 而某个Node在超过指定时间不上报信息时， 会被Master判定为“失联”， Node的状态被标记为不可用（Not Ready） ， 随后Master会触发“工作负载大转移”的自动流程。
  
- ### 1）、kubelet
+### 1）、kubelet
  
   在Kubernetes集群中， 在每个Node上都会启动一个kubelet服务进程。 该进程用于处理Master下发到本节点的任务， 管理Pod及Pod中的容器。 每个kubelet进程都会在API Server上注册节点自身的信息， 定期向Master汇报节点资源的使用情况， 并通过cAdvisor监控容器和节点资源。
   总结之，kubelet主要有节点管理、Pod管理、容器健康检查、cAdvisor资源监控功能。
 
- ### 2）、kube-proxy
+### 2）、kube-proxy
  
   在Kubernetes集群的每个Node上都会运行一个kube-proxy服务进程， 我们可以把这个进程看作Service的透明代理兼负载均衡器， 其核心功能是将到某个Service的访问请求转发到后端的多个Pod实例上。 此外， Service的Cluster IP与NodePort等概念是kube-proxy服务通过iptables的NAT转换实现的， kube-proxy在运行过程中动态创建与Service相关的iptables规则， 这些规则实现了将访问服务（Cluster IP或NodePort） 的请求负载分发到后端Pod的功能。 由于iptables机制针对的是本地的kubeproxy端口， 所以在每个Node上都要运行kube-proxy组件， 这样一来， 在Kubernetes集群内部， 我们可以在任意Node上发起对Service的访问请求。 综上所述， 由于kube-proxy的作用， 在Service的调用过程中客户端无须关心后端有几个Pod， 中间过程的通信、 负载均衡及故障恢复都是透明的。
   
