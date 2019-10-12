@@ -1,4 +1,3 @@
-# kubernetes入门
 ## 1、Master
 
   Kubernetes里的Master指的是集群控制节点， 在每个Kubernetes集群里都需要有一个Master来负责整个集群的管理和控制， 基本上Kubernetes的所有控制命令都发给它， 它负责具体的执行过程， 几乎所有命令基本都是在Master上运行的。 Master通常会占据一个独立的服务器（高可用部署建议用3台服务器），主要原因是它太重要
