@@ -195,7 +195,7 @@ service 有如下四种类型，默认是ClusterIP：
     PersistentVolumes是不属于任何namespace的，但PersistentVolumeClaim是属于某个特定namespace的。
     Events是否属于namespace取决于产生events的对象。
   
- ## 15、Annotaion
+## 15、Annotaion
   Annotation（注解） 与Label类似， 也使用key/value键值对的形式进行定义。 不同的是Label具有严格的命名规则， 它定义的是Kubernetes对象的元数据（Metadata） ， 并且用于Label Selector。 Annotation则是用户任意定义的附加信息， 以便于外部工具查找。 在很多时候， Kubernetes的模块自身会通过Annotation标记资源对象的一些特殊信息。
   通常来说， 用Annotation来记录的信息如下。
   
