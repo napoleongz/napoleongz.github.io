@@ -45,6 +45,10 @@
   Label相当于我们熟悉的“标签”。 给某个资源对象定义一个Label，就相当于给它打了一个标签， 随后可以通过Label Selector（标签选择器） 查询和筛选拥有某些Label的资源对象， Kubernetes通过这种方式实现了类似SQL的简单又通用的对象查询机制。
   Label Selector可以被类比为SQL语句中的where查询条件， 例如，name=redis-slave这个Label Selector作用于Pod时， 可以被类比为select *from pod where pod’s name =‘redis-slave’这样的语句。 当前有两种LabelSelector表达式： 基于等式的（Equality-based） 和基于集合的（Setbased） ， 前者采用等式类表达式匹配标签。
 
+
+## 5、Replication Controller
+  Replication Controller（简称RC）是Kubernetes系统中的核心概念之一， 简单来说， 它其实定义了一个期望的场景， 即声明某种Pod的副本数量在任意时刻都符合某个预期值。
+
   
   
   
